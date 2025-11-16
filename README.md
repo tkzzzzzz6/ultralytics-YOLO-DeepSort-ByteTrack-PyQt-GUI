@@ -72,3 +72,39 @@ The model files are saved in the **weights/** folder.
 python main.py
 ```
 
+## Troubleshooting
+
+### WSL 环境下的 Qt 平台插件错误
+
+如果在 WSL 中运行时遇到 `Could not load the Qt platform plugin "xcb"` 错误，请按以下步骤解决：
+
+#### 方法 1：安装系统依赖（推荐）
+
+```bash
+sudo apt-get update
+sudo apt-get install -y libxcb-xinerama0 libxcb-cursor0 libxcb-xfixes0 libxcb-xkb1 libxkbcommon-x11-0 libxkbcommon0 libxcb-render-util0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render0 libxcb-shape0 libxcb-sync1 libxcb1
+```
+
+或者安装完整的 Qt5 依赖：
+
+```bash
+sudo apt-get install -y qt5-default libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev-tools
+```
+
+#### 方法 2：配置 X11 转发（如果需要在 Windows 上显示 GUI）
+
+1. 在 Windows 上安装 X 服务器（推荐使用 [VcXsrv](https://sourceforge.net/projects/vcxsrv/) 或 [X410](https://www.microsoft.com/store/productId/9NLP712ZMN9Q)）
+2. 启动 X 服务器
+3. 在 WSL 中设置 DISPLAY 环境变量：
+
+```bash
+export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0.0
+```
+
+或者添加到 `~/.bashrc` 使其永久生效：
+
+```bash
+echo "export DISPLAY=\$(cat /etc/resolv.conf | grep nameserver | awk '{print \$2}'):0.0" >> ~/.bashrc
+source ~/.bashrc
+```
+
